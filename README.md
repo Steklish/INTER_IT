@@ -8,46 +8,57 @@
 
 ```text
 INTER_IT/
-├── 📘 FEATURE_EXTRACTION_GUIDE.md # 🌟 Полный справочник по компактным экстракторам признаков
-├── 🌊 Решение задачи переноса загрязнителя (TCE Hackathon)
-│   ├── solution.py                 # Боевой конвейер на LightGBM + Conformal Prediction
-│   ├── baseline.py                 # Базовое решение
-│   ├── scorer.py                   # Скрипт валидации и оценки метрик
-│   ├── benchmark.py                # Сравнение подходов (GPR, PINN, NumSim)
-│   ├── visualize.py                # 3D визуализация шлейфа загрязнения
-│   └── TASK_SPECIFICATION.md       # Формальная математическая спецификация
+├── 📘 FEATURE_EXTRACTION_GUIDE.md     # 🌟 Справочник по компактным экстракторам признаков
 │
-├── 📚 ml_tutorials/                # Пошаговый образовательный курс по алгоритмам ML
-│   ├── ROADMAP.md                  # Дорожная карта и руководство по экспериментам
-│   ├── 01_linear_regression.py     # Линейная регрессия (оценка недвижимости)
-│   ├── 02_logistic_regression.py   # Логистическая регрессия (банковский скоринг)
-│   ├── 03_decision_tree.py         # Дерево решений и переобучение (Overfitting)
-│   ├── 04_random_forest.py         # Случайный лес и важность признаков
-│   ├── 05_gradient_boosting.py     # Градиентный бустинг (LightGBM)
-│   ├── 06_kmeans_clustering.py     # Кластеризация K-Means (сегментация клиентов)
-│   ├── 07_production_pipeline.py   # Сквозной пайплайн ColumnTransformer
-│   └── plots/                      # Сгенерированные визуализации и графики метрик
+├── 🌊 chemical_dispersion_task/       # 🧪 Задача прогнозирования распространения химиката (TCE)
+│   ├── README.md                      # Документация и руководство по запуску решений
+│   ├── TASK_SPECIFICATION.md          # Формальная спецификация и физика процесса
+│   ├── solution.py                    # 🏆 Боевой конвейер LightGBM + Conformal Prediction
+│   ├── baseline.py                    # Базовое решение IDW
+│   ├── solution_gpr.py                # Гауссовские процессы (GPR)
+│   ├── solution_pinn.py               # Физически-информированная нейросеть (PINN)
+│   ├── solution_numsim.py             # Численная гидрогеологическая симуляция
+│   ├── scorer.py                      # Валидация и расчет метрик жюри
+│   ├── benchmark.py                   # Сравнительный бенчмарк всех 5 подходов
+│   ├── visualize.py                   # 3D визуализация шлейфа загрязнения
+│   ├── dashboard.html                 # Интерактивный веб-дашборд с 3D срезом
+│   ├── data/                          # Наблюдательная сеть скважин и замеры
+│   └── plots/                         # Графики метрик и динамики шлейфа
 │
-└── 🌐 ml_flask_apps/               # Интерактивные веб-сервисы машинного обучения на Flask
-    ├── portal.py                   # ⭐ Единый мастер-портал всех 7 приложений
-    ├── app_1_nlp_ticket_router.py  # 📨 1. NLP Классификация обращений (TF-IDF + Softmax)
-    ├── app_2_health_risk_screener.py # ❤️ 2. Объяснимый риск (Feature Attribution & What-If)
-    ├── app_3_dynamic_pricing.py    # 🏢 3. Оценка недвижимости и ROI ремонта
-    ├── app_4_fraud_detector.py     # 🛡️ 4. Пакетный CSV-аудит и поиск аномалий (Isolation Forest)
-    ├── app_5_image_feature_gbm.py  # 🖼️ 5. Компьютерное зрение (MobileNetV3 + LightGBM)
-    ├── app_6_ocr_pipeline.py       # 📄 6. Интеллектуальный OCR-пайплайн документов (OpenCV + Tesseract)
-    ├── app_7_transformer_pipeline.py # 🤖 7. Локальный Трансформер NLP (MiniLM + Matryoshka MRL)
-    ├── ocr_pipeline.py             # ⚙️ Модуль OCR: предобработка, Bounding Boxes, RegEx
-    ├── transformer_pipeline.py     # ⚙️ Модуль Трансформера: Mean Pooling, MRL, классификация
-    ├── data/                       # Тестовые датасеты для пакетного скоринга
-    └── models/                     # Сериализованные обученные модели (.joblib)
+├── 📚 ml_tutorials/                   # 🎓 Пошаговый образовательный курс по алгоритмам ML
+│   ├── ROADMAP.md                     # Дорожная карта и руководство по экспериментам
+│   ├── 01_linear_regression.py        # Линейная регрессия (оценка недвижимости)
+│   ├── 02_logistic_regression.py      # Логистическая регрессия (банковский скоринг)
+│   ├── 03_decision_tree.py            # Дерево решений и переобучение (Overfitting)
+│   ├── 04_random_forest.py            # Случайный лес и важность признаков
+│   ├── 05_gradient_boosting.py        # Градиентный бустинг (LightGBM)
+│   ├── 06_kmeans_clustering.py        # Кластеризация K-Means (сегментация клиентов)
+│   ├── 07_production_pipeline.py      # Сквозной пайплайн ColumnTransformer
+│   └── plots/                         # Сгенерированные визуализации и графики метрик
+│
+└── 🌐 ml_flask_apps/                  # 🚀 Интерактивные веб-сервисы машинного обучения на Flask
+    ├── portal.py                      # ⭐ Единый мастер-портал всех 7 приложений (порт 5000)
+    ├── app_1_nlp_ticket_router.py     # 📨 1. NLP Классификация обращений (TF-IDF + Softmax)
+    ├── app_2_health_risk_screener.py  # ❤️ 2. Объяснимый риск (Feature Attribution & What-If)
+    ├── app_3_dynamic_pricing.py       # 🏢 3. Оценка недвижимости и ROI ремонта
+    ├── app_4_fraud_detector.py        # 🛡️ 4. Пакетный CSV-аудит и поиск аномалий (Isolation Forest)
+    ├── app_5_image_feature_gbm.py     # 🖼️ 5. Компьютерное зрение (MobileNetV3 + LightGBM)
+    ├── app_6_ocr_pipeline.py          # 📄 6. Интеллектуальный OCR-пайплайн документов (OpenCV + Tesseract)
+    ├── app_7_transformer_pipeline.py  # 🤖 7. Локальный Трансформер NLP (MiniLM + Matryoshka MRL)
+    ├── ocr_pipeline.py                # ⚙️ Модуль OCR: предобработка, Bounding Boxes, RegEx
+    ├── transformer_pipeline.py        # ⚙️ Модуль Трансформера: Mean Pooling, MRL, классификация
+    ├── data/                          # Тестовые датасеты для пакетного скоринга
+    ├── models/                        # Сериализованные обученные модели (.joblib)
+    └── tessdata/                      # Локальные языковые пакеты OCR
 ```
 
 ---
 
-## 🌟 1. Задача переноса загрязнителя (TCE Spread Forecasting)
+## 🌊 1. Задача переноса загрязнителя (`chemical_dispersion_task/`)
 
 Моделируется прорыв заглубленного резервуара с трихлорэтиленом (TCE) в песчаном водоносном горизонте. Загрязнитель переносится грунтовыми водами по закону Дарси в сторону городского водозабора.
+
+Подробная документация и инструкции: [`chemical_dispersion_task/README.md`](./chemical_dispersion_task/README.md).
 
 ### 4 требуемых выхода единого пайплайна:
 1. **Точечный прогноз (`c_pred`):** Концентрация TCE ($\text{мкг/л}$) для каждой точки $(x, y, z, t)$ (минимизация RMSE).
@@ -111,7 +122,7 @@ pip install -r requirements.txt
 cd ml_flask_apps
 python portal.py
 ```
-👉 Откройте в браузере: **`http://127.0.0.1:5000/`** (доступны все 6 приложений через панель навигации).
+👉 Откройте в браузере: **`http://127.0.0.1:5000/`** (доступны все 7 приложений через панель навигации).
 
 ### 3. Запуск пошагового учебного курса:
 ```bash
@@ -121,3 +132,11 @@ python 02_logistic_regression.py
 # ... и далее по списку
 ```
 Графики результатов будут сохранены в папку `ml_tutorials/plots/`.
+
+### 4. Запуск решений задачи распространения химиката:
+```bash
+cd chemical_dispersion_task
+python solution.py       # Запуск боевой модели LightGBM
+python benchmark.py      # Сравнение всех 5 алгоритмов
+python visualize.py      # Построение графиков шлейфа и запуск дашборда
+```
