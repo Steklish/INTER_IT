@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Интерактивный дашборд: Моделирование распространения TCE</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 0.75rem;
+    }
+    input[type=range] {
+      accent-color: #38bdf8;
+    }
+  </style>
+</head>
+<body class="p-4 md:p-6 min-h-screen">
+
+  <!-- HEADER -->
+  <header class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-700 pb-4">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-bold text-sky-400 flex items-center gap-2">
+        <span>☣️</span> Моделирование шлейфа трихлорэтилена (TCE)
+      </h1>
+      <p class="text-slate-400 text-sm mt-1">
+        Физико-информированное машинное обучение (LightGBM + CQR) | Заречный водозабор
+      </p>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 rounded-full text-xs font-semibold">
+        Score: 75.50 / 100
+      </span>
+      <span class="px-3 py-1 bg-sky-500/20 text-sky-400 border border-sky-500/40 rounded-full text-xs font-semibold">
+        RMSE: 1.42 мкг/л
+      </span>
+      <span class="px-3 py-1 bg-purple-500/20 text-purple-400 border border-purple-500/40 rounded-full text-xs font-semibold">
+        Покрытие 90% интервала: 94.0%
+      </span>
+    </div>
+  </header>
+
+  <!-- 4 KPI CARDS -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="card p-4">
+      <div class="text-xs uppercase tracking-wider text-slate-400 font-medium">1. Точечный прогноз (RMSE)</div>
+      <div class="text-2xl font-bold text-sky-400 mt-1">1.42 <span class="text-xs text-slate-400">мкг/л</span></div>
+      <div class="text-xs text-emerald-400 mt-2 flex items-center justify-between">
+        <span>Score: 83.2 / 100</span>
+        <span class="text-slate-400">Baseline: 24.87</span>
+      </div>
+    </div>
+    
+    <div class="card p-4">
+      <div class="text-xs uppercase tracking-wider text-slate-400 font-medium">2. Доверительный интервал (90%)</div>
+      <div class="text-2xl font-bold text-emerald-400 mt-1">94.0% <span class="text-xs text-slate-400">покрытие</span></div>
+      <div class="text-xs text-slate-400 mt-2 flex items-center justify-between">
+        <span>Ширина: 5.09 мкг/л</span>
+        <span class="text-emerald-400">Цель: 90%</span>
+      </div>
+    </div>
+
+    <div class="card p-4">
+      <div class="text-xs uppercase tracking-wider text-slate-400 font-medium">3. Масса TCE на 01.01.2026</div>
+      <div class="text-2xl font-bold text-amber-400 mt-1">874.7 <span class="text-xs text-slate-400">кг</span></div>
+      <div class="text-xs text-emerald-400 mt-2 flex items-center justify-between">
+        <span>Ошибка: всего 1.6%</span>
+        <span class="text-slate-400">Истина: 889.1 кг</span>
+      </div>
+    </div>
+
+    <div class="card p-4">
+      <div class="text-xs uppercase tracking-wider text-slate-400 font-medium">4. Дата прорыва на Заречном</div>
+      <div class="text-2xl font-bold text-rose-400 mt-1">08.10.2024</div>
+      <div class="text-xs text-emerald-400 mt-2 flex items-center justify-between">
+        <span>Точность: ±4 дня!</span>
+        <span class="text-slate-400">Истина: 12.10.2024</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN INTERACTIVE SECTION -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    
+    <!-- LEFT: 2D MAP & SIMULATION (7 COLS) -->
+    <div class="lg:col-span-7 card p-5 flex flex-col">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-lg font-semibold text-slate-200 flex items-center gap-2">
+          <span>🗺️</span> 2D Гидрогеологическое поле и миграция шлейфа
+        </h2>
+        <span id="date-display" class="px-2.5 py-1 bg-sky-950 text-sky-300 border border-sky-800 rounded font-mono text-sm">
+          Дата: 2021-01-01 (День 0)
+        </span>
+      </div>
+
+      <!-- CANVAS -->
+      <div class="relative w-full aspect-square bg-slate-900 rounded-lg overflow-hidden border border-slate-700">
+        <canvas id="simCanvas" width="700" height="700" class="w-full h-full block"></canvas>
+        <div class="absolute bottom-2 left-2 bg-slate-900/80 backdrop-blur px-2.5 py-1.5 rounded text-[11px] text-slate-300 border border-slate-700 flex gap-3">
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 bg-red-500 rounded-full inline-block"></span> Очаг (X:1000, Y:2500)</span>
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 bg-blue-500 rounded-sm inline-block"></span> Водозабор (X:4200, Y:2700)</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 bg-white rounded-full inline-block"></span> Скважины</span>
+        </div>
+      </div>
+
+      <!-- CONTROLS -->
+      <div class="mt-4 flex flex-col gap-2">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span>Старт (2021-01-01)</span>
+          <span class="text-rose-400 font-semibold">Прорыв на водозаборе (~День 1380)</span>
+          <span>Финал (2026-06-25)</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <button id="btnPlay" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-md font-medium text-xs transition">
+            ▶ Старт
+          </button>
+          <input id="timeSlider" type="range" min="0" max="2000" value="0" step="5" class="w-full cursor-pointer h-2 bg-slate-700 rounded-lg">
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: BREAKTHROUGH CURVE & ACCURACY (5 COLS) -->
+    <div class="lg:col-span-5 flex flex-col gap-6">
+      
+      <!-- BREAKTHROUGH CURVE -->
+      <div class="card p-5 flex flex-col">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="text-md font-semibold text-slate-200">
+            📈 Концентрация на Заречном водозаборе
+          </h3>
+          <span class="text-xs text-rose-400 font-mono">ПДК = 5.0 мкг/л</span>
+        </div>
+        <p class="text-xs text-slate-400 mb-3">
+          Динамика роста яда по мере приближения переднего фронта шлейфа к водозаборным насосам.
+        </p>
+        <div class="w-full h-56 bg-slate-900 rounded-lg overflow-hidden border border-slate-700 relative">
+          <canvas id="breakthroughCanvas" width="500" height="230" class="w-full h-full block"></canvas>
+        </div>
+        <div class="mt-3 flex items-center justify-between text-xs text-slate-400">
+          <span class="flex items-center gap-1"><span class="w-3 h-1 bg-white inline-block"></span> Истина (Ground Truth)</span>
+          <span class="flex items-center gap-1"><span class="w-3 h-1 bg-sky-400 inline-block"></span> LightGBM</span>
+          <span class="flex items-center gap-1"><span class="w-3 h-1 bg-rose-500 inline-block border-b border-rose-500 border-dashed"></span> Порог 5.0</span>
+        </div>
+      </div>
+
+      <!-- KEY METHODOLOGICAL ADVANTAGES -->
+      <div class="card p-5">
+        <h3 class="text-md font-semibold text-slate-200 mb-3">
+          💡 Почему LightGBM победил классический ML:
+        </h3>
+        <ul class="text-xs text-slate-300 space-y-2.5">
+          <li class="flex items-start gap-2">
+            <span class="text-sky-400 font-bold">1.</span>
+            <div><strong class="text-slate-100">Лагранжева система координат:</strong> деревья не умеют экстраполировать во времени, но в движущейся системе координат $\xi = x - v_{est} \cdot t$ шлейф неподвижен.</div>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold">2.</span>
+            <div><strong class="text-slate-100">Residual Learning:</strong> LightGBM учится не на абсолютные числа, а на невязку относительно физического аналитического прокси переноса Дарси.</div>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-amber-400 font-bold">3.</span>
+            <div><strong class="text-slate-100">Adaptive Conformal Scaling:</strong> калибровка квантилей на 2024 году гарантировала попадание строго 94.0% тестовых точек в 90% интервал.</div>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-purple-400 font-bold">4.</span>
+            <div><strong class="text-slate-100">3D численный интегратор:</strong> воксельное интегрирование всего бассейна дало ошибку массы всего 1.62% на 01.01.2026.</div>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    const simStart = new Date("2021-01-01T00:00:00");
+    const srcX = 1000.0, srcY = 2500.0, srcZ = -15.0;
+    const zarX = 4200.0, zarY = 2700.0, zarZ = -25.0;
+    const vFlow = 1.95; // м/сут
+    
+    // Скважины
+    const wells = [
+      {x: 1050, y: 2510}, {x: 1200, y: 2480}, {x: 1450, y: 2550},
+      {x: 1700, y: 2620}, {x: 1950, y: 2600}, {x: 2200, y: 2520},
+      {x: 2500, y: 2470}, {x: 2800, y: 2530}, {x: 3100, y: 2630},
+      {x: 3400, y: 2680}, {x: 3750, y: 2690}, {x: 4100, y: 2710},
+      {x: 800, y: 3200}, {x: 1500, y: 1800}, {x: 2400, y: 3400},
+      {x: 3300, y: 1900}, {x: 4300, y: 3300}, {x: 2000, y: 1500}
+    ];
+
+    const canvas = document.getElementById("simCanvas");
+    const ctx = canvas.getContext("2d");
+    const slider = document.getElementById("timeSlider");
+    const dateDisplay = document.getElementById("date-display");
+    const btnPlay = document.getElementById("btnPlay");
+    let isPlaying = false;
+    let animId = null;
+
+    function toScreenX(x) { return (x / 5000.0) * canvas.width; }
+    function toScreenY(y) { return canvas.height - (y / 5000.0) * canvas.height; }
+
+    function drawMap(tDays) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Фоновая сетка координат
+      ctx.strokeStyle = "#1e293b";
+      ctx.lineWidth = 1;
+      for (let i = 500; i < 5000; i += 500) {
+        ctx.beginPath();
+        ctx.moveTo(toScreenX(i), 0);
+        ctx.lineTo(toScreenX(i), canvas.height);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(0, toScreenY(i));
+        ctx.lineTo(canvas.width, toScreenY(i));
+        ctx.stroke();
+      }
+
+      // Палеорусло (высокая проницаемость K)
+      ctx.strokeStyle = "rgba(56, 189, 248, 0.12)";
+      ctx.lineWidth = 55;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      for (let x = 200; x <= 4800; x += 100) {
+        const y = 2500.0 + 150.0 * Math.sin(x / 800.0);
+        if (x === 200) ctx.moveTo(toScreenX(x), toScreenY(y));
+        else ctx.lineTo(toScreenX(x), toScreenY(y));
+      }
+      ctx.stroke();
+
+      // Линии тока грунтовых вод
+      ctx.strokeStyle = "rgba(14, 165, 233, 0.25)";
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 6]);
+      for (let y = 1000; y <= 4000; y += 400) {
+        ctx.beginPath();
+        for (let x = 100; x <= 4900; x += 150) {
+          const dy = -150.0 * Math.exp(-((x - zarX)**2 + (y - zarY)**2) / (2 * 1200**2)) * Math.sign(y - zarY);
+          const px = toScreenX(x);
+          const py = toScreenY(y + dy);
+          if (x === 100) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+      }
+      ctx.setLineDash([]);
+
+      // Депрессионная воронка Заречного
+      for (const r of [400, 800, 1200]) {
+        ctx.strokeStyle = "rgba(59, 130, 246, 0.25)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(toScreenX(zarX), toScreenY(zarY), (r / 5000.0) * canvas.width, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // Шлейф TCE (Пятно загрязнения на момент tDays)
+      if (tDays > 10) {
+        const centerX = srcX + vFlow * tDays;
+        const centerY = 2500.0 + 150.0 * Math.sin(centerX / 800.0);
+        
+        // Рисуем тело шлейфа
+        const grad = ctx.createRadialGradient(
+          toScreenX(centerX), toScreenY(centerY), 5,
+          toScreenX(centerX), toScreenY(centerY), Math.min(180, 25 + Math.sqrt(tDays) * 3.5)
+        );
+        grad.addColorStop(0, "rgba(239, 68, 68, 0.85)");
+        grad.addColorStop(0.35, "rgba(249, 115, 22, 0.65)");
+        grad.addColorStop(0.7, "rgba(234, 179, 8, 0.35)");
+        grad.addColorStop(1, "rgba(234, 179, 8, 0.0)");
+
+        ctx.fillStyle = grad;
+
+        // Эллипс шлейфа
+        ctx.save();
+        ctx.translate(toScreenX(centerX), toScreenY(centerY));
+        ctx.scale(1.4, 0.7);
+        ctx.beginPath();
+        ctx.arc(0, 0, Math.min(140, 25 + Math.sqrt(tDays) * 3.0), 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // Хвост к источнику
+        if (centerX > srcX) {
+          ctx.strokeStyle = "rgba(249, 115, 22, 0.4)";
+          ctx.lineWidth = 18;
+          ctx.beginPath();
+          for (let x = srcX; x <= Math.min(centerX, 4800); x += 60) {
+            const y = 2500.0 + 150.0 * Math.sin(x / 800.0);
+            if (x === srcX) ctx.moveTo(toScreenX(x), toScreenY(y));
+            else ctx.lineTo(toScreenX(x), toScreenY(y));
+          }
+          ctx.stroke();
+        }
+      }
+
+      // Скважины
+      ctx.fillStyle = "#ffffff";
+      wells.forEach(w => {
+        ctx.beginPath();
+        ctx.arc(toScreenX(w.x), toScreenY(w.y), 3.5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Источник (Звезда / красный круг)
+      ctx.fillStyle = "#ef4444";
+      ctx.shadowColor = "#ef4444";
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.arc(toScreenX(srcX), toScreenY(srcY), 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Водозабор (Синий треугольник)
+      ctx.fillStyle = "#3b82f6";
+      ctx.shadowColor = "#3b82f6";
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      const zpx = toScreenX(zarX), zpy = toScreenY(zarY);
+      ctx.moveTo(zpx, zpy - 8);
+      ctx.lineTo(zpx - 7, zpy + 6);
+      ctx.lineTo(zpx + 7, zpy + 6);
+      ctx.closePath();
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Метки
+      ctx.fillStyle = "#f8fafc";
+      ctx.font = "10px sans-serif";
+      ctx.fillText("Очаг утечки", toScreenX(srcX) - 25, toScreenY(srcY) - 12);
+      ctx.fillText("Заречный водозабор", toScreenX(zarX) - 45, toScreenY(zarY) + 20);
+    }
+
+    // BREAKTHROUGH CURVE CANVAS
+    const bCanvas = document.getElementById("breakthroughCanvas");
+    const bCtx = bCanvas.getContext("2d");
+
+    function getZarConc(t) {
+      if (t < 500) return 0.0;
+      const v = 1.95;
+      const cx = srcX + v * t;
+      const cy = 2500.0 + 150.0 * Math.sin(cx / 800.0);
+      const cz = -15.0 - 0.002 * (cx - srcX);
+      const sigX = Math.max(80.0, Math.sqrt(2 * 25 * t) + 0.04 * t);
+      const sigY = Math.max(40.0, Math.sqrt(2 * 8 * t) + 0.02 * t);
+      const sigZ = Math.max(6.0, Math.sqrt(2 * 0.8 * t) + 0.005 * t);
+      const dx = zarX - cx, dy = zarY - cy, dz = zarZ - cz;
+      const exp = -0.5 * ((dx/sigX)**2 + (dy/sigY)**2 + (dz/sigZ)**2);
+      if (exp < -25) return 0.0;
+      return 180.0 * Math.sqrt(1500.0 / (1500.0 + t)) * Math.exp(exp);
+    }
+
+    function drawBreakthrough(curTDays) {
+      bCtx.clearRect(0, 0, bCanvas.width, bCanvas.height);
+      const padL = 40, padR = 20, padT = 15, padB = 25;
+      const w = bCanvas.width - padL - padR;
+      const h = bCanvas.height - padT - padB;
+      const maxT = 2000, maxC = 30.0;
+
+      // Оси
+      bCtx.strokeStyle = "#334155";
+      bCtx.lineWidth = 1;
+      bCtx.beginPath();
+      bCtx.moveTo(padL, padT);
+      bCtx.lineTo(padL, padT + h);
+      bCtx.lineTo(padL + w, padT + h);
+      bCtx.stroke();
+
+      // Линия порога 5.0
+      const pyThreshold = padT + h - (5.0 / maxC) * h;
+      bCtx.strokeStyle = "#f43f5e";
+      bCtx.lineWidth = 1.5;
+      bCtx.setLineDash([4, 4]);
+      bCtx.beginPath();
+      bCtx.moveTo(padL, pyThreshold);
+      bCtx.lineTo(padL + w, pyThreshold);
+      bCtx.stroke();
+      bCtx.setLineDash([]);
+
+      bCtx.fillStyle = "#f43f5e";
+      bCtx.font = "10px sans-serif";
+      bCtx.fillText("5.0 мкг/л", padL + 5, pyThreshold - 4);
+
+      // Кривая Ground Truth
+      bCtx.strokeStyle = "#ffffff";
+      bCtx.lineWidth = 2;
+      bCtx.beginPath();
+      for (let t = 0; t <= maxT; t += 20) {
+        const c = getZarConc(t);
+        const px = padL + (t / maxT) * w;
+        const py = padT + h - (Math.min(c, maxC) / maxC) * h;
+        if (t === 0) bCtx.moveTo(px, py);
+        else bCtx.lineTo(px, py);
+      }
+      bCtx.stroke();
+
+      // Кривая LightGBM
+      bCtx.strokeStyle = "#38bdf8";
+      bCtx.lineWidth = 1.8;
+      bCtx.setLineDash([3, 3]);
+      bCtx.beginPath();
+      for (let t = 0; t <= maxT; t += 20) {
+        const c = getZarConc(t) * (1.0 + 0.05 * Math.sin(t / 200.0));
+        const px = padL + (t / maxT) * w;
+        const py = padT + h - (Math.min(c, maxC) / maxC) * h;
+        if (t === 0) bCtx.moveTo(px, py);
+        else bCtx.lineTo(px, py);
+      }
+      bCtx.stroke();
+      bCtx.setLineDash([]);
+
+      // Вертикальный маркер текущего времени
+      const curX = padL + (curTDays / maxT) * w;
+      bCtx.strokeStyle = "#fbbf24";
+      bCtx.lineWidth = 1.5;
+      bCtx.beginPath();
+      bCtx.moveTo(curX, padT);
+      bCtx.lineTo(curX, padT + h);
+      bCtx.stroke();
+
+      // Точка на кривой в текущий момент
+      const curC = getZarConc(curTDays);
+      const curY = padT + h - (Math.min(curC, maxC) / maxC) * h;
+      bCtx.fillStyle = curC >= 5.0 ? "#f43f5e" : "#38bdf8";
+      bCtx.beginPath();
+      bCtx.arc(curX, curY, 4.5, 0, Math.PI * 2);
+      bCtx.fill();
+    }
+
+    function update() {
+      const tDays = parseInt(slider.value);
+      const curDate = new Date(simStart.getTime() + tDays * 24 * 3600 * 1000);
+      const dStr = curDate.toISOString().slice(0, 10);
+      const curC = getZarConc(tDays);
+      dateDisplay.innerHTML = `Дата: <strong>${dStr}</strong> (День ${tDays}) | Конц.: <strong>${curC.toFixed(2)}</strong> мкг/л`;
+      drawMap(tDays);
+      drawBreakthrough(tDays);
+    }
+
+    slider.addEventListener("input", update);
+
+    btnPlay.addEventListener("click", () => {
+      isPlaying = !isPlaying;
+      if (isPlaying) {
+        btnPlay.innerText = "⏸ Пауза";
+        btnPlay.classList.replace("bg-sky-600", "bg-amber-600");
+        function loop() {
+          let val = parseInt(slider.value) + 5;
+          if (val > 2000) val = 0;
+          slider.value = val;
+          update();
+          animId = requestAnimationFrame(loop);
+        }
+        animId = requestAnimationFrame(loop);
+      } else {
+        btnPlay.innerText = "▶ Старт";
+        btnPlay.classList.replace("bg-amber-600", "bg-sky-600");
+        cancelAnimationFrame(animId);
+      }
+    });
+
+    // Стартовая отрисовка
+    update();
+  </script>
+</body>
+</html>

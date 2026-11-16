@@ -1,0 +1,201 @@
+transaction_id,amount_usd,hour_of_day,velocity_1h,merchant
+TX-10000,29.87,11.7,2,Electronics
+TX-10001,8.24,15.3,1,Electronics
+TX-10002,68.13,13.3,1,Crypto Exchange
+TX-10003,55.06,7.0,3,Crypto Exchange
+TX-10004,88.61,15.2,1,Coffee Shop
+TX-10005,50.78,11.4,2,Electronics
+TX-10006,19818.88,4.0,10,Electronics
+TX-10007,13.79,15.6,1,Online Game
+TX-10008,18.21,12.3,1,Crypto Exchange
+TX-10009,127.62,11.5,2,Electronics
+TX-10010,15.48,11.0,1,Coffee Shop
+TX-10011,105.21,14.2,1,Coffee Shop
+TX-10012,129.87,9.7,1,Electronics
+TX-10013,54.31,17.2,1,Crypto Exchange
+TX-10014,12.09,16.3,3,Coffee Shop
+TX-10015,30.27,11.1,2,Online Game
+TX-10016,28.83,17.0,1,Coffee Shop
+TX-10017,28.53,15.1,1,Supermarket
+TX-10018,10.48,17.1,1,Supermarket
+TX-10019,9.22,9.8,1,Crypto Exchange
+TX-10020,43.02,8.7,3,Electronics
+TX-10021,18.04,11.5,1,Crypto Exchange
+TX-10022,20.82,19.6,1,Crypto Exchange
+TX-10023,103.18,10.9,3,Crypto Exchange
+TX-10024,48.72,16.2,2,Crypto Exchange
+TX-10025,39.17,17.8,2,Online Game
+TX-10026,81.38,14.2,1,Online Game
+TX-10027,6.22,15.7,1,Coffee Shop
+TX-10028,56.78,12.9,1,Supermarket
+TX-10029,6.85,11.9,2,Crypto Exchange
+TX-10030,12.8,10.9,1,Coffee Shop
+TX-10031,14.7,16.2,3,Supermarket
+TX-10032,88.34,20.2,2,Electronics
+TX-10033,30.69,17.0,2,Online Game
+TX-10034,36.41,13.7,1,Supermarket
+TX-10035,57.23,15.3,1,Electronics
+TX-10036,22.22,9.2,1,Supermarket
+TX-10037,7.09,14.9,1,Online Game
+TX-10038,37248.05,1.0,18,Online Game
+TX-10039,9.56,13.2,1,Coffee Shop
+TX-10040,76.8,16.7,1,Crypto Exchange
+TX-10041,40.41,12.8,1,Supermarket
+TX-10042,7.8,17.6,2,Supermarket
+TX-10043,44.61,18.6,1,Electronics
+TX-10044,12.63,16.0,1,Online Game
+TX-10045,15.04,15.4,3,Supermarket
+TX-10046,5.24,18.1,2,Online Game
+TX-10047,94.23,10.0,1,Supermarket
+TX-10048,11.71,13.5,1,Coffee Shop
+TX-10049,32.13,10.4,1,Crypto Exchange
+TX-10050,83.83,14.5,1,Supermarket
+TX-10051,30.89,11.2,3,Online Game
+TX-10052,31.86,11.9,1,Coffee Shop
+TX-10053,61.98,10.8,1,Supermarket
+TX-10054,55.19,12.0,1,Electronics
+TX-10055,127.25,14.6,1,Crypto Exchange
+TX-10056,11.54,16.9,1,Supermarket
+TX-10057,64.15,13.2,3,Coffee Shop
+TX-10058,33.35,10.9,1,Electronics
+TX-10059,19756.55,3.0,17,Coffee Shop
+TX-10060,19.6,10.5,1,Coffee Shop
+TX-10061,74.6,12.3,2,Electronics
+TX-10062,31.04,16.8,1,Coffee Shop
+TX-10063,7443.12,4.0,22,Electronics
+TX-10064,46.1,14.3,1,Supermarket
+TX-10065,37.92,13.3,1,Electronics
+TX-10066,9.46,21.5,1,Electronics
+TX-10067,31.4,14.3,2,Crypto Exchange
+TX-10068,30.02,14.0,1,Electronics
+TX-10069,18.4,19.7,1,Electronics
+TX-10070,22.11,16.1,1,Supermarket
+TX-10071,6.66,15.2,1,Crypto Exchange
+TX-10072,40.52,14.8,2,Online Game
+TX-10073,13373.97,3.0,13,Supermarket
+TX-10074,84.25,9.6,1,Supermarket
+TX-10075,12.75,16.7,1,Online Game
+TX-10076,9.31,8.4,1,Electronics
+TX-10077,64.63,19.0,1,Coffee Shop
+TX-10078,10.26,15.4,2,Crypto Exchange
+TX-10079,14.05,12.5,1,Coffee Shop
+TX-10080,83.08,7.0,1,Online Game
+TX-10081,74.0,9.0,1,Supermarket
+TX-10082,15.15,7.2,1,Supermarket
+TX-10083,50.7,14.3,1,Crypto Exchange
+TX-10084,95.52,18.1,1,Supermarket
+TX-10085,5.9,15.8,2,Supermarket
+TX-10086,24.52,13.6,2,Crypto Exchange
+TX-10087,7.69,7.5,2,Crypto Exchange
+TX-10088,40.12,15.6,3,Online Game
+TX-10089,18.77,17.7,2,Supermarket
+TX-10090,119.87,21.5,1,Supermarket
+TX-10091,7.71,17.3,1,Online Game
+TX-10092,32.69,14.7,1,Electronics
+TX-10093,122.97,13.1,1,Electronics
+TX-10094,9.08,9.0,2,Electronics
+TX-10095,20.97,20.6,1,Online Game
+TX-10096,12.02,9.8,1,Supermarket
+TX-10097,29.45,12.3,1,Online Game
+TX-10098,37.17,11.6,1,Online Game
+TX-10099,24380.92,3.0,22,Electronics
+TX-10100,5.19,11.3,3,Coffee Shop
+TX-10101,41.26,15.1,1,Supermarket
+TX-10102,66.76,15.8,3,Electronics
+TX-10103,16.54,15.8,1,Coffee Shop
+TX-10104,7.3,10.2,1,Coffee Shop
+TX-10105,36.28,16.8,1,Crypto Exchange
+TX-10106,44.03,11.1,1,Supermarket
+TX-10107,16075.11,2.0,21,Coffee Shop
+TX-10108,110.35,16.7,2,Electronics
+TX-10109,153.54,16.8,1,Crypto Exchange
+TX-10110,62.78,11.5,1,Supermarket
+TX-10111,17.09,16.9,1,Online Game
+TX-10112,10.94,15.8,1,Electronics
+TX-10113,48.09,14.8,1,Coffee Shop
+TX-10114,12.15,9.6,3,Coffee Shop
+TX-10115,18.54,13.2,1,Electronics
+TX-10116,10.18,21.3,1,Coffee Shop
+TX-10117,51.09,9.7,1,Crypto Exchange
+TX-10118,23.49,9.6,3,Supermarket
+TX-10119,56.63,22.1,1,Crypto Exchange
+TX-10120,9.0,17.0,1,Coffee Shop
+TX-10121,5.73,15.0,1,Online Game
+TX-10122,17.72,16.2,1,Supermarket
+TX-10123,8.6,11.0,1,Supermarket
+TX-10124,5.59,14.1,1,Electronics
+TX-10125,13.35,15.7,1,Electronics
+TX-10126,27.37,11.7,1,Online Game
+TX-10127,21.42,14.9,1,Supermarket
+TX-10128,18.07,12.4,1,Online Game
+TX-10129,29.07,13.5,2,Electronics
+TX-10130,17.05,11.1,2,Electronics
+TX-10131,24.79,18.1,2,Supermarket
+TX-10132,14.69,11.6,2,Crypto Exchange
+TX-10133,17.53,16.1,1,Coffee Shop
+TX-10134,8.31,15.9,1,Electronics
+TX-10135,9.47,14.7,2,Electronics
+TX-10136,12380.84,2.0,20,Crypto Exchange
+TX-10137,30.12,16.4,1,Crypto Exchange
+TX-10138,18.66,12.7,1,Online Game
+TX-10139,42.76,16.2,2,Online Game
+TX-10140,50.6,16.1,1,Coffee Shop
+TX-10141,14.5,16.6,1,Coffee Shop
+TX-10142,101.61,11.1,1,Supermarket
+TX-10143,12.23,13.8,1,Online Game
+TX-10144,19.42,11.9,1,Electronics
+TX-10145,20.54,16.4,1,Online Game
+TX-10146,40.13,18.5,1,Electronics
+TX-10147,21.05,13.9,1,Crypto Exchange
+TX-10148,32.38,23.0,1,Online Game
+TX-10149,13.99,12.9,1,Crypto Exchange
+TX-10150,62.83,23.0,1,Coffee Shop
+TX-10151,25.3,15.7,1,Coffee Shop
+TX-10152,37.74,15.0,1,Supermarket
+TX-10153,23.91,10.6,1,Online Game
+TX-10154,30.6,14.4,1,Crypto Exchange
+TX-10155,36.89,14.2,1,Electronics
+TX-10156,14.59,11.6,2,Coffee Shop
+TX-10157,56.59,11.7,1,Coffee Shop
+TX-10158,40.02,14.4,1,Electronics
+TX-10159,16.08,10.7,1,Crypto Exchange
+TX-10160,47.95,12.3,1,Crypto Exchange
+TX-10161,33.84,14.7,1,Online Game
+TX-10162,36.95,9.4,1,Online Game
+TX-10163,11.15,12.3,1,Supermarket
+TX-10164,156.7,16.3,1,Coffee Shop
+TX-10165,38.12,17.4,3,Online Game
+TX-10166,16.43,17.0,2,Crypto Exchange
+TX-10167,7.35,14.0,1,Electronics
+TX-10168,62.66,13.1,1,Crypto Exchange
+TX-10169,64.48,14.0,1,Coffee Shop
+TX-10170,6.62,17.8,1,Crypto Exchange
+TX-10171,20.44,15.8,2,Supermarket
+TX-10172,58.83,11.4,1,Coffee Shop
+TX-10173,10.94,15.0,2,Electronics
+TX-10174,6.12,9.8,1,Supermarket
+TX-10175,6.46,16.9,2,Coffee Shop
+TX-10176,28.92,16.5,2,Electronics
+TX-10177,19.06,14.2,2,Supermarket
+TX-10178,97.92,18.4,1,Supermarket
+TX-10179,12.23,17.8,1,Coffee Shop
+TX-10180,75.39,15.2,1,Online Game
+TX-10181,78.44,16.8,1,Supermarket
+TX-10182,109.08,19.1,1,Supermarket
+TX-10183,29730.19,3.0,12,Electronics
+TX-10184,16.97,8.7,2,Crypto Exchange
+TX-10185,6.32,11.8,2,Coffee Shop
+TX-10186,14.09,21.4,2,Coffee Shop
+TX-10187,10.32,16.0,1,Online Game
+TX-10188,47.49,16.3,1,Online Game
+TX-10189,61.72,18.0,1,Coffee Shop
+TX-10190,34930.39,2.0,22,Online Game
+TX-10191,67.53,20.5,1,Electronics
+TX-10192,16.73,15.0,1,Coffee Shop
+TX-10193,26.31,13.1,2,Online Game
+TX-10194,89.01,13.7,3,Coffee Shop
+TX-10195,24.5,14.5,2,Crypto Exchange
+TX-10196,18.77,16.4,1,Supermarket
+TX-10197,17.7,10.6,1,Coffee Shop
+TX-10198,15.44,16.2,1,Supermarket
+TX-10199,45.35,10.3,3,Online Game

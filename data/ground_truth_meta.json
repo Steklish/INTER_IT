@@ -1,0 +1,12 @@
+{
+  "mass_2026_kg": 889.06,
+  "arrival_time_date": "2024-10-12",
+  "arrival_time_days_from_start": 1380,
+  "threshold_ug_l": 5.0,
+  "sim_start": "2021-01-01",
+  "zarechny_intake": {
+    "x": 4200.0,
+    "y": 2700.0,
+    "z": -25.0
+  }
+}
