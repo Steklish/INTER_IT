@@ -41,6 +41,7 @@ import matplotlib.pyplot as plt
 from sklearn.ensemble import IsolationForest
 from sklearn.metrics import f1_score, precision_score, recall_score
 from statsmodels.tsa.seasonal import seasonal_decompose
+import lightgbm as lgb
 
 
 # ==============================================================================
@@ -212,7 +213,14 @@ def run_anomaly_detection_pipeline():
     r_stl = recall_score(y_true, pred_stl, zero_division=0)
     f1_stl = f1_score(y_true, pred_stl, zero_division=0)
 
-    # 4. Запуск Метода 3: Isolation Forest
+    # 4. Запуск Метода 4: LightGBM Predictor
+    print("[Метод 4] Обучение табличного регрессионного предиктора (LightGBM Residuals)...")
+    pred_lgb, resid_lgb, lgb_threshold = detect_anomalies_lgb_predictor(df, threshold_sigma=2.5)
+    p_lgb = precision_score(y_true, pred_lgb, zero_division=0)
+    r_lgb = recall_score(y_true, pred_lgb, zero_division=0)
+    f1_lgb = f1_score(y_true, pred_lgb, zero_division=0)
+
+    # 5. Запуск Метода 3: Isolation Forest
     print("[Метод 3] Обучение многомерного детектора Isolation Forest...")
     contamination_rate = n_total_anomalies / len(df)
     pred_iso = detect_anomalies_isolation_forest(df, contamination=contamination_rate)
@@ -220,21 +228,23 @@ def run_anomaly_detection_pipeline():
     r_iso = recall_score(y_true, pred_iso, zero_division=0)
     f1_iso = f1_score(y_true, pred_iso, zero_division=0)
 
-    # 5. Сводная таблица метрик
-    print("\n" + "=" * 65)
-    print(f"{'Алгоритм обнаружения':<28} | {'Precision':<9} | {'Recall':<9} | {'F1-Score':<9}")
-    print("-" * 65)
-    print(f"{'1. Seasonal Rolling MAD':<28} | {p_mad*100:6.1f}%   | {r_mad*100:6.1f}%   | {f1_mad*100:6.1f}%")
-    print(f"{'2. STL Residual Analysis':<28} | {p_stl*100:6.1f}%   | {r_stl*100:6.1f}%   | {f1_stl*100:6.1f}%")
-    print(f"{'3. Isolation Forest ML':<28}   | {p_iso*100:6.1f}%   | {r_iso*100:6.1f}%   | {f1_iso*100:6.1f}%")
-    print("=" * 65)
+    # 6. Сводная таблица метрик
+    print("\n" + "=" * 75)
+    print(f"{'Алгоритм обнаружения':<30} | {'Precision':<9} | {'Recall':<9} | {'F1-Score':<9}")
+    print("-" * 75)
+    print(f"{'1. Seasonal Rolling MAD':<30} | {p_mad*100:6.1f}%   | {r_mad*100:6.1f}%   | {f1_mad*100:6.1f}%")
+    print(f"{'2. STL Residual Analysis':<30} | {p_stl*100:6.1f}%   | {r_stl*100:6.1f}%   | {f1_stl*100:6.1f}%")
+    print(f"{'3. Isolation Forest ML':<30}   | {p_iso*100:6.1f}%   | {r_iso*100:6.1f}%   | {f1_iso*100:6.1f}%")
+    print(f"{'4. LightGBM Predictor (Adv.)':<30} | {p_lgb*100:6.1f}%   | {r_lgb*100:6.1f}%   | {f1_lgb*100:6.1f}%")
+    print("=" * 75)
 
     print("\n💡 ЭКСПЕРТНЫЕ ВЫВОДЫ:")
     print("• Seasonal MAD формирует динамический коридор, следующий за суточным циклом, отлично фиксируя сдвиги уровней и пики.")
     print("• STL Residual Analysis блестяще изолирует скрытые ночные всплески благодаря вычитанию суточного профиля.")
     print("• Isolation Forest оценивает точки комплексно в многомерном пространстве (величина + дифференциал dy/dt).")
+    print("• LightGBM Predictor моделирует поведение системы и помечает аномалиями точки с высокой ошибкой (residuals).")
 
-    # 6. Построение наглядного аналитического графика
+    # 7. Построение наглядного аналитического графика
     os.makedirs("plots", exist_ok=True)
     fig, axes = plt.subplots(3, 1, figsize=(16, 12), sharex=True)
 
@@ -270,12 +280,14 @@ def run_anomaly_detection_pipeline():
     mad_hits = df[pred_mad == 1]
     stl_hits = df[pred_stl == 1]
     iso_hits = df[pred_iso == 1]
+    lgb_hits = df[pred_lgb == 1]
 
     axes[2].scatter(mad_hits.index, mad_hits["rps"], color="#3498db", marker="^", s=65, label=f"Seasonal MAD (F1={f1_mad*100:.1f}%)", zorder=4)
     axes[2].scatter(stl_hits.index, stl_hits["rps"], color="#9b59b6", marker="s", s=45, label=f"STL Residuals (F1={f1_stl*100:.1f}%)", zorder=5)
     axes[2].scatter(iso_hits.index, iso_hits["rps"], color="#e67e22", marker="o", s=30, label=f"Isolation Forest (F1={f1_iso*100:.1f}%)", zorder=6)
+    axes[2].scatter(lgb_hits.index, lgb_hits["rps"], color="#2c3e50", marker="D", s=25, label=f"LightGBM Pred (F1={f1_lgb*100:.1f}%)", zorder=7)
 
-    axes[2].set_title("3. Сопоставление срабатываний всех 3 алгоритмов", fontsize=12, fontweight="bold")
+    axes[2].set_title("3. Сопоставление срабатываний всех 4 алгоритмов", fontsize=12, fontweight="bold")
     axes[2].set_ylabel("RPS", fontsize=11)
     axes[2].set_xlabel("Временная шкала (Дата)", fontsize=11)
     axes[2].grid(True, linestyle=":", alpha=0.6)
@@ -287,6 +299,44 @@ def run_anomaly_detection_pipeline():
     plt.close()
     print(f"\n📊 График сохранен в файл: {plot_path}")
     print("=" * 70)
+
+# ==============================================================================
+# 7. ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ МЕТОДА 4
+# ==============================================================================
+def detect_anomalies_lgb_predictor(df, threshold_sigma=3.5):
+    """
+    Обучает модель LightGBM предсказывать RPS на шаг вперед.
+    Аномалия = большая ошибка прогноза (разница между фактом и прогнозом).
+    """
+    data = df.copy()
+    data['target'] = data['rps'].shift(-1) # Предсказываем следующий шаг
+    data['hour'] = data.index.hour
+    data['lag1'] = data['rps'].shift(1)
+    data['lag2'] = data['rps'].shift(2)
+    data = data.dropna()
+    
+    X = data[['hour', 'lag1', 'lag2']]
+    y = data['target']
+    
+    # Тренируем на 80%
+    split = int(len(X) * 0.8)
+    model = lgb.LGBMRegressor(n_estimators=100, verbosity=-1)
+    model.fit(X.iloc[:split], y.iloc[:split])
+    
+    # Предсказываем всё
+    preds = model.predict(X)
+    residuals = (y - preds).abs()
+    
+    # Порог на основе обучения
+    resid_threshold = residuals.iloc[:split].mean() + threshold_sigma * residuals.iloc[:split].std()
+    
+    is_anomaly = (residuals > resid_threshold).astype(int)
+    
+    # Приводим к исходному размеру (учитывая сдвиг target)
+    full_is_anomaly = pd.Series(0, index=df.index)
+    full_is_anomaly.iloc[1:len(is_anomaly)+1] = is_anomaly.values
+    
+    return full_is_anomaly, residuals, resid_threshold
 
 
 if __name__ == "__main__":
