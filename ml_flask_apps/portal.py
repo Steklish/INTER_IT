@@ -27,6 +27,7 @@ import app_3_dynamic_pricing as app3
 import app_4_fraud_detector as app4
 import app_5_image_feature_gbm as app5
 import app_6_ocr_pipeline as app6
+import app_7_transformer_pipeline as app7
 
 app = Flask(__name__)
 
@@ -43,6 +44,7 @@ NAV_HEADER = """
         <a href="/app4" style="color: #e2e8f0; text-decoration: none; font-size: 14px; padding: 6px 12px; border-radius: 4px; background: #1e293b;">🛡️ 4. Fraud Audit</a>
         <a href="/app5" style="color: #e2e8f0; text-decoration: none; font-size: 14px; padding: 6px 12px; border-radius: 4px; background: #1e293b;">🖼️ 5. Vision + GBM</a>
         <a href="/app6" style="color: #e2e8f0; text-decoration: none; font-size: 14px; padding: 6px 12px; border-radius: 4px; background: #1e293b;">📄 6. OCR Pipeline</a>
+        <a href="/app7" style="color: #e2e8f0; text-decoration: none; font-size: 14px; padding: 6px 12px; border-radius: 4px; background: #1e293b;">🤖 7. Transformer NLP</a>
     </div>
 </div>
 """
@@ -131,6 +133,15 @@ HOME_TEMPLATE = f"""
             <div class="card-tech"><b>Стек:</b> OpenCV + Tesseract OCR Engine + Entity Extractor</div>
             <a href="/app6" class="card-btn">Открыть приложение →</a>
         </div>
+
+        <!-- Карточка 7 -->
+        <div class="card">
+            <div class="card-icon">🤖</div>
+            <div class="card-title">7. Локальный Трансформер NLP</div>
+            <div class="card-desc">Запуск MiniLM на CPU: извлечение 384-мерных эмбеддингов через Self-Attention + Mean Pooling, анализ токенизации WordPiece, классификация и Matryoshka (MRL).</div>
+            <div class="card-tech"><b>Стек:</b> Hugging Face Transformers (MiniLM) + PyTorch + MRL</div>
+            <a href="/app7" class="card-btn">Открыть приложение →</a>
+        </div>
     </div>
 </div>
 
@@ -188,6 +199,14 @@ def view_app5():
 @app.route('/app6', methods=['GET', 'POST'])
 def view_app6():
     response = app6.ocr_view()
+    if isinstance(response, str):
+        return NAV_HEADER + response
+    return response
+
+
+@app.route('/app7', methods=['GET', 'POST'])
+def view_app7():
+    response = app7.transformer_view()
     if isinstance(response, str):
         return NAV_HEADER + response
     return response

@@ -8,6 +8,7 @@
 
 ```text
 INTER_IT/
+├── 📘 FEATURE_EXTRACTION_GUIDE.md # 🌟 Полный справочник по компактным экстракторам признаков
 ├── 🌊 Решение задачи переноса загрязнителя (TCE Hackathon)
 │   ├── solution.py                 # Боевой конвейер на LightGBM + Conformal Prediction
 │   ├── baseline.py                 # Базовое решение
@@ -28,14 +29,16 @@ INTER_IT/
 │   └── plots/                      # Сгенерированные визуализации и графики метрик
 │
 └── 🌐 ml_flask_apps/               # Интерактивные веб-сервисы машинного обучения на Flask
-    ├── portal.py                   # ⭐ Единый мастер-портал всех 6 приложений
+    ├── portal.py                   # ⭐ Единый мастер-портал всех 7 приложений
     ├── app_1_nlp_ticket_router.py  # 📨 1. NLP Классификация обращений (TF-IDF + Softmax)
     ├── app_2_health_risk_screener.py # ❤️ 2. Объяснимый риск (Feature Attribution & What-If)
     ├── app_3_dynamic_pricing.py    # 🏢 3. Оценка недвижимости и ROI ремонта
     ├── app_4_fraud_detector.py     # 🛡️ 4. Пакетный CSV-аудит и поиск аномалий (Isolation Forest)
     ├── app_5_image_feature_gbm.py  # 🖼️ 5. Компьютерное зрение (MobileNetV3 + LightGBM)
     ├── app_6_ocr_pipeline.py       # 📄 6. Интеллектуальный OCR-пайплайн документов (OpenCV + Tesseract)
+    ├── app_7_transformer_pipeline.py # 🤖 7. Локальный Трансформер NLP (MiniLM + Matryoshka MRL)
     ├── ocr_pipeline.py             # ⚙️ Модуль OCR: предобработка, Bounding Boxes, RegEx
+    ├── transformer_pipeline.py     # ⚙️ Модуль Трансформера: Mean Pooling, MRL, классификация
     ├── data/                       # Тестовые датасеты для пакетного скоринга
     └── models/                     # Сериализованные обученные модели (.joblib)
 ```
@@ -78,6 +81,19 @@ INTER_IT/
 4. **Enterprise Fraud & Anomaly Audit:** Загрузка файлов CSV (`<input type="file">`), потоковая обработка в памяти без записи на диск, обучение без учителя (`IsolationForest`) для выявления аномальных финансовых операций.
 5. **Computer Vision + LightGBM Hybrid:** Предобученная сверточная сеть (`MobileNetV3`) извлекает 576 непрерывных признаков, а L2-нормализатор, PCA и LightGBM мгновенно классифицируют ландшафт с 2D проекцией EDA.
 6. **Intelligent Document OCR Pipeline:** 4-фазный пайплайн распознавания документов: адаптивная бинаризация OpenCV, разметка рамок слов (Bounding Boxes), чтение текста на русском и английском (Tesseract LSTM) и парсинг сущностей регулярными выражениями.
+7. **Local Transformer NLP Pipeline:** Запуск компактной модели `sentence-transformers/all-MiniLM-L6-v2` (~80 МБ) на CPU: токенизация WordPiece, Mean Pooling с Attention Mask, извлечение 384-мерного эмбеддинга, классификация и демонстрация Matryoshka Representation Learning (MRL).
+
+---
+
+## 📘 4. Справочник по экстракторам признаков (`FEATURE_EXTRACTION_GUIDE.md`)
+
+В репозитории доступен подробный справочник [**`FEATURE_EXTRACTION_GUIDE.md`**](./FEATURE_EXTRACTION_GUIDE.md) по выбору компактных локальных моделей (весом 10–150 МБ) для извлечения признаков из:
+* **Текста** (`all-MiniLM-L6-v2`, `multilingual-e5-small`, `nomic-embed`).
+* **Изображений** (`MobileNetV3/V4`, `DINOv2-Small`, `EfficientNet-B0`).
+* **Мультимодальных пар текст+фото** (`MobileCLIP-S0`, `SigLIP-base`).
+* **Аудио и речи** (`Whisper-tiny Encoder`, `CLAP`, `Wav2Vec2`).
+* **Временных рядов** (`MiniRocket`, `Catch22`, `Chronos-Tiny`).
+* **Табличных данных** (`CatBoostEncoder`, `TargetEncoder`, `TabPFN`).
 
 ---
 
